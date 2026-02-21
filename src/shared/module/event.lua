@@ -6,6 +6,7 @@
 
 ---@class Event : EventParams
 ---@field core Core
+---@field destructor fun(self: Event): void
 class 'Event' {
 	---@param self Event
 	---@param core Core
