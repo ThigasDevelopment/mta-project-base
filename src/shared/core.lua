@@ -14,6 +14,7 @@ class 'Core' {
 	---@param self Core
 	---@return void
 	load = function (self)
+		---@type Listeners
 		self.modules['listeners'] = Listeners (self);
 		self.modules['listeners']:load ();
 	end,
