@@ -26,6 +26,12 @@ class 'Event' {
 
 		return self;
 	end,
+
+	---@param self Event
+	---@return void
+	destructor = function (self)
+		removeEventHandler (self.name, self.attachedTo, self.handler);
+	end,
 };
 
 ---@type fun(core: Core, params: EventParams): Event
