@@ -63,7 +63,6 @@ The project uses an Object-Oriented approach to keep the codebase clean and modu
 The `shared` folder contains the core logic and base classes used by both the client and server sides. It is divided into the following parts:
 
 - **`shared/core.lua`**: The heart of the project. It defines the `Core` class, which acts as the main manager. The `Core` is responsible for initializing modules (such as the event/listener manager) and, on the client side, initializing the thread manager.
-- **`shared/api/module.lua`**: Defines the base `Module` class, which provides a standard structure for managing properties (`props`) through the `getProps` and `setProps` methods. It can be extended by other modules to maintain a configuration standard.
 - **`shared/module/event.lua`**: Defines the `Event` class, which acts as a wrapper for MTA's native event functions (`addEvent` and `addEventHandler`). It simplifies event creation by allowing you to define the name, the attached element (`attachedTo`), the callback function (`handler`), and whether the event is remote (`remote`).
 - **`shared/module/listener.lua`**: Defines the `Listener` class, which extends the `Event` class. It is designed to be the base class for all event handlers in the project. The `Listener` automatically binds the `handle` method (which must be overridden in child classes) to the specified event.
 
