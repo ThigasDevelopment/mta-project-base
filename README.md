@@ -19,7 +19,6 @@ I am currently working on expanding the core functionality. Planned features inc
 ## Project Structure
 
 ```
-.
 ├── config.lua          # General configuration
 ├── LICENSE             # MIT License
 ├── meta.xml            # Resource metadata
