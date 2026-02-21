@@ -2,7 +2,7 @@
 ---@field core Core
 ---@field event Event
 ---@field handle fun(self: Listener, ...): void
-class 'Listener' : extends 'Event' {
+class 'Listener' {
 	---@param self Listener
 	---@param core Core
 	---@param params EventParams
