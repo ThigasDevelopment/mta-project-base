@@ -1,5 +1,6 @@
----@class Listener : Event, ClassDefinition
+---@class Listener
 ---@field core Core
+---@field event Event
 ---@field handle fun(self: Listener, ...): void
 class 'Listener' : extends 'Event' {
 	---@param self Listener
@@ -10,7 +11,7 @@ class 'Listener' : extends 'Event' {
 		self.core = core;
 
 		self.onHandle = bind (self.handle, self);
-		self:super (self.core, {
+		self.event = Event (self.core, {
 			name = params.name,
 			attachedTo = params.attachedTo,
 
