@@ -112,14 +112,59 @@ class 'PlayerJoinListener' : extends 'Listener' {
 If you need to create an event manually without the automatic listener system, you can use the `Event` class directly:
 
 ```lua
-local myEvent = Event(Core, {
-	name = 'onResourceStart',
-	attachedTo = resourceRoot,
-	handler = function(startedRes)
-		print('Resource started: ' .. getResourceName(startedRes))
+---@class Interface
+---@field core Core
+---@field event Event | nil
+---@field render fun(self: Interface): void
+---@field toggle fun(self: Interface): void
+class 'Interface' {
+	---@param self Interface
+	---@param core Core
+	---@return Interface
+	constructor = function (self, core)
+		self.core = core;
+
+    self.onRender = bind (self.render, self);
+    setTimer (
+      function ()
+        self:toggle ();
+      end, 2000, 0
+    );
+
+		return self;
 	end,
-	remote = false
-})
+
+  ---@param self Interface
+  ---@return void
+  render = function ()
+      local tick = getTickCount ();
+
+      dxDrawRectangle (0, 0, 500, 500, 0xFFFFFF, false);
+      dxDrawText ('RENDERER', 0, 0, 500, 500, 0x000000, 1, 'default-bold', 'center', 'center');
+  end,
+
+  ---@param self Interface
+  ---@return void
+  toggle = function (self)
+    if (self.event) then
+        self.event:destructor ()
+        self.event = nil;
+    else
+        self.event = Event (self.core, {
+          name = 'onClientRender',
+          attachedTo = root,
+
+          handler = self.onRender,
+          remote = false,
+        });
+    end
+  end,
+};
+
+---@type fun(core: Core): Interface
+Interface = new 'Interface';
+
+local myInterface = Interface (core);
 ```
 
 ---
