@@ -1,3 +1,5 @@
+---@class Module : ModuleAPI, ClassDefinition
+
 ---@class Core
 ---@field threads? Threads
 ---@field modules table<string, any>
