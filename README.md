@@ -39,8 +39,6 @@ I am currently working on expanding the core functionality. Planned features inc
     │               └── example.lua
     ├── shared/         # Shared code (accessible by both)
     │   ├── core.lua    # The heart of the project. Defines the main Core class that manages modules and initialization.
-    │   ├── api/
-    │   │   └── module.lua
     │   └── module/
     │       ├── event.lua
     │       └── listener.lua
