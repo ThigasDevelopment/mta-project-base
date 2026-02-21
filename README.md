@@ -21,6 +21,7 @@ I am currently working on expanding the core functionality. Planned features inc
 ```
 .
 ├── config.lua          # General configuration
+├── LICENSE             # MIT License
 ├── meta.xml            # Resource metadata
 ├── README.md           # Project documentation
 └── src/
