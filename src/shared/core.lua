@@ -4,10 +4,8 @@ class 'Core' {
 	---@return Core
 	constructor = function (self)
 		self.modules = { };
+		self.threads = Threads.new ();
 
-		if (IS_CLIENT_SIDE) then
-			self.threads = Threads.new ();
-		end
 		return self;
 	end,
 

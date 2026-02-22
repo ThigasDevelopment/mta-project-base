@@ -1,4 +1,4 @@
----@class Listener
+---@class Listener : ClassDefinition
 ---@field core Core
 ---@field event Event
 ---@field handle fun(self: Listener, ...): void

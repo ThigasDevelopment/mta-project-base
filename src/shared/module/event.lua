@@ -4,7 +4,7 @@
 ---@field handler fun(...: any): any
 ---@field remote? boolean
 
----@class Event : EventParams
+---@class Event : EventParams, ClassDefinition
 ---@field core Core
 ---@field destructor fun(self: Event): void
 class 'Event' {

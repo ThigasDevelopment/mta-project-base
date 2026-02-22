@@ -3,7 +3,7 @@
 ---@field handler fun(player: userdata, ...: any): any
 ---@field aliases? string[]
 
----@class Command : CommandParams
+---@class Command : CommandParams, ClassDefinition
 ---@field core Core
 class 'Command' {
 	---@param self Command
