@@ -1,4 +1,5 @@
 ---@class Listeners
+---@field core Core
 ---@field load fun(self: Listeners): void
 class 'Listeners' {
 	---@param self Listeners
