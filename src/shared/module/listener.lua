@@ -10,12 +10,11 @@ class 'Listener' {
 	constructor = function (self, core, params)
 		self.core = core;
 
-		self.onHandle = bind (self.handle, self);
 		self.event = Event (self.core, {
 			name = params.name,
 			attachedTo = params.attachedTo,
 
-			handler = self.onHandle,
+			handler = bind (self.handle, self),
 			remote = params.remote,
 		});
 
