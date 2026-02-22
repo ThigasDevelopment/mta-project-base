@@ -6,8 +6,8 @@ This repository serves as my personal script base/boilerplate for Multi Theft Au
 
 - **Modular Structure**: Organized into client, server, and shared environments.
 - **Utility Libraries**: Includes helper functions and classes to streamline development.
-  - **`class.lua`**: Object-Oriented Programming support, sourced from [ThigasDevelopment/lua-class](https://github.com/ThigasDevelopment/lua-class).
-  - **`threads.lua`**: Coroutine-based thread management, sourced from [ThigasDevelopment/mta-threads](https://github.com/ThigasDevelopment/mta-threads).
+  - [utils/lib/class.lua](utils/lib/class.lua): Object-Oriented Programming support, sourced from [ThigasDevelopment/lua-class](https://github.com/ThigasDevelopment/lua-class).
+  - [utils/lib/threads.lua](utils/lib/threads.lua): Coroutine-based thread management, sourced from [ThigasDevelopment/mta-threads](https://github.com/ThigasDevelopment/mta-threads).
 
 ## Future Plans
 
@@ -27,12 +27,20 @@ I am currently working on expanding the core functionality. Planned features inc
     ├── client/         # Client-side logic
     │   ├── index.lua   # Client entry point. Listens to 'onClientResourceStart' and initializes the Core.
     │   └── modules/
+    │       ├── commands/
+    │       │   ├── index.lua
+    │       │   ├── admin/
+    │       │   └── user/
     │       └── listeners/
     │           ├── index.lua
     │           └── handlers/
     ├── server/         # Server-side logic
     │   ├── index.lua   # Server entry point. Listens to 'onResourceStart' and initializes the Core.
     │   └── modules/
+    │       ├── commands/
+    │       │   ├── index.lua
+    │       │   ├── admin/
+    │       │   └── user/
     │       └── listeners/
     │           ├── index.lua
     │           └── handlers/
@@ -40,6 +48,7 @@ I am currently working on expanding the core functionality. Planned features inc
     ├── shared/         # Shared code (accessible by both)
     │   ├── core.lua    # The heart of the project. Defines the main Core class that manages modules and initialization.
     │   └── module/
+    │       ├── command.lua
     │       ├── event.lua
     │       └── listener.lua
     └── utils/          # Utility functions and type definitions
@@ -55,16 +64,17 @@ I am currently working on expanding the core functionality. Planned features inc
 
 The project uses an Object-Oriented approach to keep the codebase clean and modular:
 
-- **`src/shared/core.lua`**: This is the main manager. It defines the `Core` class, which is responsible for holding and loading all future modules (events, utilities, etc.). It also initializes a thread manager if running on the client side.
-- **`src/server/index.lua` & `src/client/index.lua`**: These are the entry points for the server and client, respectively. When the resource starts (`onResourceStart` / `onClientResourceStart`), they instantiate the `Core` class and call its `init()` method, which in turn loads the rest of the project.
+- [src/shared/core.lua](src/shared/core.lua): This is the main manager. It defines the `Core` class, which is responsible for holding and loading all future modules (events, utilities, etc.). It also initializes a thread manager if running on the client side.
+- [src/server/index.lua](src/server/index.lua) & [src/client/index.lua](src/client/index.lua): These are the entry points for the server and client, respectively. When the resource starts (`onResourceStart` / `onClientResourceStart`), they instantiate the `Core` class and call its `init()` method, which in turn loads the rest of the project.
 
 ### Shared Modules
 
 The `shared` folder contains the core logic and base classes used by both the client and server sides. It is divided into the following parts:
 
-- **`shared/core.lua`**: The heart of the project. It defines the `Core` class, which acts as the main manager. The `Core` is responsible for initializing modules (such as the event/listener manager) and, on the client side, initializing the thread manager.
-- **`shared/module/event.lua`**: Defines the `Event` class, which acts as a wrapper for MTA's native event functions (`addEvent` and `addEventHandler`). It simplifies event creation by allowing you to define the name, the attached element (`attachedTo`), the callback function (`handler`), and whether the event is remote (`remote`).
-- **`shared/module/listener.lua`**: Defines the `Listener` class, which extends the `Event` class. It is designed to be the base class for all event handlers in the project. The `Listener` automatically binds the `handle` method (which must be overridden in child classes) to the specified event.
+- [src/shared/core.lua](src/shared/core.lua): The heart of the project. It defines the `Core` class, which acts as the main manager. The `Core` is responsible for initializing modules (such as the event/listener manager) and, on the client side, initializing the thread manager.
+- [src/shared/module/event.lua](src/shared/module/event.lua): Defines the `Event` class, which acts as a wrapper for MTA's native event functions (`addEvent` and `addEventHandler`). It simplifies event creation by allowing you to define the name, the attached element (`attachedTo`), the callback function (`handler`), and whether the event is remote (`remote`).
+- [src/shared/module/listener.lua](src/shared/module/listener.lua): Defines the `Listener` class, which extends the `Event` class. It is designed to be the base class for all event handlers in the project. The `Listener` automatically binds the `handle` method (which must be overridden in child classes) to the specified event.
+- [src/shared/module/command.lua](src/shared/module/command.lua): Defines the `Command` class, which acts as a wrapper for MTA's native command functions (`addCommandHandler` and `removeCommandHandler`). It simplifies command creation by allowing you to define the name, aliases, and the callback function (`handler`).
 
 ### How the Listener Loads Events
 
@@ -75,7 +85,7 @@ The event system is built to be automatic and object-oriented. The loading proce
 3. **Automatic Loading**: The `Listeners` class has a `load()` method that uses the `getClasses()` function (from the OOP library) to iterate over all registered classes in the script.
 4. **Event Registration**: During the iteration, if the current class extends the `Listener` class (i.e., `class.__super.__name == 'Listener'`), the system automatically instantiates it by calling its constructor and passing the `Core` instance. This causes the event to be registered in MTA and the `handle` method to be set as the official callback for that event.
 
-### Examples
+### Event Examples
 
 #### 1. Creating a Listener (Recommended)
 The best way to handle events is by creating a new class that extends `Listener` inside the `handlers` folder. It will be automatically loaded by the system.
@@ -165,6 +175,67 @@ class 'Interface' {
 Interface = new 'Interface';
 
 local myInterface = Interface (core);
+```
+
+### How the Command System Works
+
+The command system is built similarly to the event system, allowing you to create commands in an object-oriented way. The loading process works as follows:
+
+1. **Command Creation**: You create a new class in the `commands` folder (e.g., `admin/kick.lua`) that extends the `Command` class. In the constructor, you call `self:super()` passing the command configurations (name, aliases, and the handler function).
+2. **Core Initialization**: When the resource starts, the `Core` is instantiated and calls the `load()` method, which in turn initializes the `Commands` class (located in `modules/commands/index.lua`).
+3. **Automatic Loading**: The `Commands` class has a `load()` method that uses the `getClasses()` function to iterate over all registered classes in the script.
+4. **Command Registration**: During the iteration, if the current class extends the `Command` class (i.e., `class.__super.__name == 'Command'`), the system automatically instantiates it by calling its constructor and passing the `Core` instance. This causes the command and its aliases to be registered in MTA.
+
+### Command Examples
+
+#### 1. Creating a Command (Recommended)
+The best way to handle commands is by creating a new class that extends `Command` inside the `commands` folder. It will be automatically loaded by the system.
+
+```lua
+---@class ExampleCommand : Command
+---@field core Core
+class 'ExampleCommand' : extends 'Command' {
+	---@param self ExampleCommand
+	---@param core Core
+	---@return ExampleCommand
+	constructor = function (self, core)
+		self.core = core;
+
+		-- Initialize the command with its details
+		self:super (self.core, {
+			name = 'example',
+			aliases = { 'ex' },
+			handler = bind (self.handle, self)
+		});
+
+		return self;
+	end,
+
+	---@param self ExampleCommand
+	---@param player userdata
+	---@param cmd string
+	---@param ... any
+	---@return void
+	handle = function (self, player, cmd, ...)
+		outputChatBox ('You executed the example command!', player, 0, 255, 0);
+	end,
+};
+```
+
+#### 2. Creating a Command Manually
+If you need to create a command manually without the automatic system, you can use the `Command` class directly:
+
+```lua
+local myCommand = Command (core, {
+	name = 'manualcmd',
+	aliases = { 'mcmd' },
+	handler = function (player, cmd, ...)
+		outputChatBox ('Manual command executed!', player, 255, 255, 0);
+	end
+});
+
+-- To remove the command later:
+-- myCommand:destructor ()
 ```
 
 ---
