@@ -10,7 +10,7 @@
 class 'Event' {
 	---@param self Event
 	---@param core Core
-	---@param props EventParams
+	---@param params EventParams
 	---@return Event
 	constructor = function (self, core, params)
 		self.core = core;
